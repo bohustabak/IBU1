@@ -31,6 +31,19 @@ struct State{
   void (*on_exit)();
 };
 
+class Fsm{
+    public:
+    int state;
+    void trigger(int state){ 
+        this->state = state;
+    }
+    
+};
+template<typename T> // type with alias T
+struct Reference{ //compiletime reference wraper simmilar to std::reference
+    T& ref; //reference
+    constexpr Reference(T& reference) : ref(reference){}
+};
 
 class Fsm{
 	public:
@@ -69,26 +82,22 @@ class Fsm{
 	  bool m_initialized;
 };
 
-class Flat{
-	const Fsm* fsmArr;
-	const unsigned int size;
-	
-	public:
-	template<unsigned int SIZE>
-	Flat(const Fsm(&fsmList)[SIZE] ) : fsmArr(fsmList), size(SIZE){}
-	void trigger(int event){
-		for(int index; index < size; ++index){
-			fsmArr[index].triger(event);
-		}
-	}
-		
-}
-Fsm fs1;
 
-Flat fl({fs1,fs2});
+struct Flat{
+    //initiliazer_list is language level class that can store any number of elements of the same type
+    const std::initializer_list< Reference<Fsm> > list; //Fsm* could be used instead of Reference<Fsm> but you would need to write & when passing the elements {&st1,&st2,&st3}
+    public:
+    
+    //const expressed constructor that will be called in compiletime
+    constexpr Flat(const std::initializer_list< Reference<Fsm> > l) : list(l){}
 
-Flat fl({fs1,fs2});
-
+    void trigger(int state){
+        
+        for(auto& it : list){//range based for loop added in C++11 google it
+            it.ref.trigger(state); 
+        }
+    }
+};
 
 
 
