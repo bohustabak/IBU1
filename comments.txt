@@ -1,0 +1,2 @@
+http://cpp.sh/8n42p - link with class for multiple fsm handling
+http://www.cplusplus.com/forum/general/52820/ Constructing Pointer to Array of Classes
