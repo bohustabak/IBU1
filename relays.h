@@ -14,4 +14,7 @@ enum REL_indexes{
   REL_L12_HALL,
 };
 
+//void REL_vInit();
+//void REL_vSwitch( unsigned char ucBit, unsigned char ucState);
+
 #endif

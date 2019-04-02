@@ -16,7 +16,7 @@
 #ifndef FSM_H
 #define FSM_H
 
-
+#include "main.h"
 #if defined(ARDUINO) && ARDUINO >= 100
   #include <Arduino.h>
 #else
@@ -24,13 +24,28 @@
 #endif
 
 
+void DoNothing(void){};
+bool FSM_Always(void){ return TRUE};
+
+
+typedef struct State tState;
+
+typedef struct Transition{
+	uint8_t Event;
+	bool (*Condition)();
+	void (*OnTransition)();
+	tState* NewState;
+}tTransition;
+
 struct State{
-  State(void (*on_enter)(), void (*on_state)(), void (*on_exit)());
   void (*on_enter)();
-  void (*on_state)();
   void (*on_exit)();
+  tTransition* pTransition;
+  uchar NoOfElements(tTransition);
+	tState* pMasterState;
 };
 
+/*
 class Fsm{
     public:
     int state;
@@ -39,11 +54,7 @@ class Fsm{
     }
     
 };
-template<typename T> // type with alias T
-struct Reference{ //compiletime reference wraper simmilar to std::reference
-    T& ref; //reference
-    constexpr Reference(T& reference) : ref(reference){}
-};
+*/
 
 class Fsm{
 	public:
@@ -82,23 +93,28 @@ class Fsm{
 	  bool m_initialized;
 };
 
+/*
+template<typename T> // type with alias T
+struct Reference{ //compiletime reference wraper simmilar to std::reference
+    T& ref; //reference
+    constexpr Reference(T& reference) : ref(reference){}
+};
 
 struct Flat{
     //initiliazer_list is language level class that can store any number of elements of the same type
-    const std::initializer_list< Reference<Fsm> > list; //Fsm* could be used instead of Reference<Fsm> but you would need to write & when passing the elements {&st1,&st2,&st3}
+    const std::initializer_list< Reference<Fsm> > list; //Fsm* could be used instead of Reference<Fsm> but you would need 
+																													//to write & when passing the elements {&st1,&st2,&st3}
     public:
-    
     //const expressed constructor that will be called in compiletime
-    constexpr Flat(const std::initializer_list< Reference<Fsm> > l) : list(l){}
+    constexpr Flat(const std::initializer_list< Reference<Fsm> > l) : lxist(l){}
 
     void trigger(int state){
-        
         for(auto& it : list){//range based for loop added in C++11 google it
             it.ref.trigger(state); 
         }
     }
 };
-
+*/
 
 
 
